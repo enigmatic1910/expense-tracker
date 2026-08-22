@@ -10,6 +10,8 @@ public record UpdateTransactionDto(
         Long paymentModeId,
         Long categoryId,
         Long accountId,
-        LocalDateTime transactionDate
+        LocalDateTime transactionDate,
+        Long toAccount,
+        String transferId
 ) {
 }

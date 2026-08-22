@@ -36,7 +36,7 @@ public class CategoryRepoTest {
         final var savedCategory = categoryRepo.save(category);
 
         var userId = savedUser.getId();
-        //var userId = UUID.randomUUID().toString();
+
         var categoryId = savedCategory.getId();
 
         assertTrue("Category should exist for the given user and category ID",

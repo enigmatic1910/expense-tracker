@@ -1,6 +1,5 @@
 package com.project.expensetracker.entity;
 import com.project.expensetracker.enums.TransactionType;
-import com.project.expensetracker.entity.Category;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,7 +29,7 @@ public class Transaction {
     @CreationTimestamp
     private LocalDateTime transactionDate;
 
-    private Long transferId;
+    private String transferId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="category_id")

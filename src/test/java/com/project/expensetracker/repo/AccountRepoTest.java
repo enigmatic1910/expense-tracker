@@ -26,16 +26,22 @@ public class AccountRepoTest {
                 .build();
 
         final var savedUser = userRepo.save(user);
-        final var account = Account.builder()
+        final var account1 = Account.builder()
                 .user(savedUser)
                 .build();
 
-        final var savedAccount = accountRepo.save(account);
+        final var account2 = Account.builder()
+                .user(savedUser)
+                .build();
 
-        final var userId = user.getId();
-        //final var userId = UUID.randomUUID().toString();
-        final var accountId = account.getId();
+        final var savedAccount1 = accountRepo.save(account1);
+        final var savedAccount2 = accountRepo.save(account2);
 
-        assertTrue(accountRepo.existsByUserIdAndAccount(userId, accountId));
+        final var userId = savedUser.getId();
+
+        final var accountId1 = savedAccount1.getId();
+        final var accountId2 = savedAccount2.getId();
+
+        assertTrue(accountRepo.existsByUserIdAndAccount(userId, List.of(accountId1, accountId2), 2));
     }
 }

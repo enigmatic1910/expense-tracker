@@ -5,15 +5,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface AccountRepo extends JpaRepository<Account,Long> {
 
     @Query("""
-    select count(a) > 0
+    select count(a) = :listCount
     from Account a
-    join a.user u
-    where u.id = :userId
-    and a.id = :accountId
+    where a.user.id = :userId
+    and a.id in :accounts
 """)
-    boolean existsByUserIdAndAccount(String userId, Long accountId);
+    boolean existsByUserIdAndAccount(String userId, List<Long> accounts, int listCount);
 }

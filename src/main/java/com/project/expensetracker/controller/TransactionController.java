@@ -33,7 +33,7 @@ public class TransactionController {
         return ResponseEntity.ok(transactions);
     }
 
-    @PatchMapping("/update")
+    @PatchMapping("/")
     ResponseEntity<TransactionDto> updateTransaction(@RequestBody UpdateTransactionDto requestBody) {
 
         var responseBody = transactionService.updateTransaction(LOGGED_IN_USER, requestBody);

@@ -10,6 +10,7 @@ public record CreateTransactionDto(
         Long categoryId,
         Long accountId,
         LocalDateTime transactionDate,
-        Long toAccount
+        Long toAccount,
+        String transferId
 ) {
 }

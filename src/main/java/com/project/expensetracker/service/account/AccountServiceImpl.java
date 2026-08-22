@@ -12,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AccountServiceImpl implements AccountService {
@@ -22,20 +24,20 @@ public class AccountServiceImpl implements AccountService {
 
     @Transactional
     @Override
-    public boolean existsByUserAndAccount(String userId, Long accountId){
-        final var account = accountRepo.existsByUserIdAndAccount(userId, accountId);
+    public boolean existsByUserAndAccount(String userId, List<Long> accounts){
+        final var account = accountRepo.existsByUserIdAndAccount(userId, accounts, accounts.size());
         return account;
     }
 
     @Transactional
     @Override
-    public void updateBalance(Long accountId, Double amount, Long paymentedModeId, String type) throws InsufficientBalanceException {
+    public void updateBalance(Long accountId, Double amount, Long paymentedModeId, String type, boolean isSourceAccount) throws InsufficientBalanceException {
         final var paymentMode = paymentModeService.get(paymentedModeId);
 
         AccountBalanceStrategy strategy = accountBalanceStrategyFactory.getStrategy((paymentMode.getType()));
 
         Account account = get(accountId);
-        final var updatedBalance = strategy.calculateBalance(account, amount, TransactionType.valueOf(type.toUpperCase()), false);
+        final var updatedBalance = strategy.calculateBalance(account, amount, TransactionType.valueOf(type.toUpperCase()), isSourceAccount);
 
         account.setBalance(updatedBalance);
 

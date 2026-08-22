@@ -1,5 +1,6 @@
 package com.project.expensetracker.exception;
 
+import com.project.expensetracker.exceptions.AccountNotOwnedByUserException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,5 +44,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleInsufficientBalanceException(InsufficientBalanceException ex) {
         log.error(ex.getMessage());
         return ResponseEntity.status(400).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AccountNotOwnedByUserException.class)
+    public ResponseEntity<?> handleAccountNotOwnedByUserException(AccountNotOwnedByUserException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(403).body(ex.getMessage());
     }
 }
