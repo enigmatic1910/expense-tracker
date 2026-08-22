@@ -2,10 +2,10 @@ package com.project.expensetracker.dto;
 
 import java.time.LocalDateTime;
 
-public record UpdateTransactionDto(
+public record TransactionRequestDto(
         Long transactionId,
         String transactionType,
-        Long amount,
+        Double amount,
         String description,
         Long paymentModeId,
         Long categoryId,

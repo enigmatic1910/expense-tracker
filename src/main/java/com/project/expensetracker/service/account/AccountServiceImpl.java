@@ -25,8 +25,7 @@ public class AccountServiceImpl implements AccountService {
     @Transactional
     @Override
     public boolean existsByUserAndAccount(String userId, List<Long> accounts){
-        final var account = accountRepo.existsByUserIdAndAccount(userId, accounts, accounts.size());
-        return account;
+        return accountRepo.existsByUserIdAndAccount(userId, accounts, accounts.size());
     }
 
     @Transactional

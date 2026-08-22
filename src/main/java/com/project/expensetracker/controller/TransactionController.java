@@ -1,8 +1,7 @@
 package com.project.expensetracker.controller;
 
-import com.project.expensetracker.dto.CreateTransactionDto;
 import com.project.expensetracker.dto.TransactionDto;
-import com.project.expensetracker.dto.UpdateTransactionDto;
+import com.project.expensetracker.dto.TransactionRequestDto;
 import com.project.expensetracker.service.transaction.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,7 +19,7 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/")
-    ResponseEntity<TransactionDto> createTransaction(@RequestBody CreateTransactionDto requestBody) {
+    ResponseEntity<TransactionDto> createTransaction(@RequestBody TransactionRequestDto requestBody) {
 
         final var responseBody = transactionService.saveTransaction(requestBody, LOGGED_IN_USER);
         return ResponseEntity.status(HttpStatus.CREATED).body(responseBody);
@@ -34,7 +33,7 @@ public class TransactionController {
     }
 
     @PatchMapping("/")
-    ResponseEntity<TransactionDto> updateTransaction(@RequestBody UpdateTransactionDto requestBody) {
+    ResponseEntity<TransactionDto> updateTransaction(@RequestBody TransactionRequestDto requestBody) {
 
         var responseBody = transactionService.updateTransaction(LOGGED_IN_USER, requestBody);
         return ResponseEntity.ok(responseBody);

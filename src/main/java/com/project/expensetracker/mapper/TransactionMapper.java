@@ -1,6 +1,6 @@
 package com.project.expensetracker.mapper;
 import com.project.expensetracker.dto.TransactionDto;
-import com.project.expensetracker.dto.UpdateTransactionDto;
+import com.project.expensetracker.dto.TransactionRequestDto;
 import com.project.expensetracker.entity.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -24,7 +24,7 @@ public interface TransactionMapper {
     @Mapping(target = "account", source = "transactionDto.accountId", qualifiedByName = "idToAccount")
     @Mapping(target="category", source = "transactionDto.categoryId", qualifiedByName = "idToCategory")
     @Mapping(target = "paymentMode", source = "transactionDto.paymentModeId", qualifiedByName = "idToPaymentMode")
-    void updateTransactionFromDto(UpdateTransactionDto transactionDto, @MappingTarget Transaction transaction, String userId);
+    void updateTransactionFromDto(TransactionRequestDto transactionDto, @MappingTarget Transaction transaction, String userId);
 
     @Named("idToUser")
     default User idToUser(String id){

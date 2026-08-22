@@ -1,8 +1,7 @@
 package com.project.expensetracker.service.transaction;
-import com.project.expensetracker.dto.UpdateTransactionDto;
+import com.project.expensetracker.dto.TransactionRequestDto;
 import com.project.expensetracker.entity.*;
 import com.project.expensetracker.enums.TransactionType;
-import com.project.expensetracker.dto.CreateTransactionDto;
 import com.project.expensetracker.dto.TransactionDto;
 import com.project.expensetracker.exception.CategoryNotFoundException;
 import com.project.expensetracker.exception.PaymentModeNotFoundException;
@@ -36,7 +35,7 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Transactional
     @Override
-    public TransactionDto saveTransaction(CreateTransactionDto requestBody, String userId) {
+    public TransactionDto saveTransaction(TransactionRequestDto requestBody, String userId) {
 
         Long accountId = requestBody.accountId();
         Long categoryId = requestBody.categoryId();
@@ -55,7 +54,7 @@ public class TransactionServiceImpl implements TransactionService {
         return handleExpenseOrIncome(requestBody, userId, accountId, paymentModeId, transactionType, categoryId);
     }
 
-    private TransactionDto handleTransfer(CreateTransactionDto requestBody, String userId, Long accountId, Long paymentModeId, Long toAccountId, String transactionType, Long categoryId){
+    private TransactionDto handleTransfer(TransactionRequestDto requestBody, String userId, Long accountId, Long paymentModeId, Long toAccountId, String transactionType, Long categoryId){
         accountService.updateBalance(accountId, requestBody.amount(), paymentModeId, requestBody.transactionType(), true);
 
         accountService.updateBalance(toAccountId, requestBody.amount(), paymentModeId, requestBody.transactionType(), false);
@@ -106,7 +105,7 @@ public class TransactionServiceImpl implements TransactionService {
         return transactionMapper.toTransactionDto(savedTransaction);
     }
 
-    private TransactionDto handleExpenseOrIncome(CreateTransactionDto requestBody, String userId, Long accountId, Long paymentModeId, String transactionType, Long categoryId) {
+    private TransactionDto handleExpenseOrIncome(TransactionRequestDto requestBody, String userId, Long accountId, Long paymentModeId, String transactionType, Long categoryId) {
         accountService.updateBalance(accountId, requestBody.amount(), paymentModeId, requestBody.transactionType(), false);
 
         final var transaction = Transaction.builder()
@@ -169,7 +168,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public TransactionDto updateTransaction(String userId, UpdateTransactionDto requestBody) {
+    public TransactionDto updateTransaction(String userId, TransactionRequestDto requestBody) {
 
         final var accountId = requestBody.accountId();
         final var categoryId = requestBody.categoryId();
