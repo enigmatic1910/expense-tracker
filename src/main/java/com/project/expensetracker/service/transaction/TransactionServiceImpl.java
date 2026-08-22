@@ -56,7 +56,6 @@ public class TransactionServiceImpl implements TransactionService {
 
     private TransactionDto handleTransfer(TransactionRequestDto requestBody, String userId, Long accountId, Long paymentModeId, Long toAccountId, String transactionType, Long categoryId){
         accountService.updateBalance(accountId, requestBody.amount(), paymentModeId, requestBody.transactionType(), true);
-
         accountService.updateBalance(toAccountId, requestBody.amount(), paymentModeId, requestBody.transactionType(), false);
 
         final var transeferId = UUID.randomUUID().toString();
@@ -108,21 +107,8 @@ public class TransactionServiceImpl implements TransactionService {
     private TransactionDto handleExpenseOrIncome(TransactionRequestDto requestBody, String userId, Long accountId, Long paymentModeId, String transactionType, Long categoryId) {
         accountService.updateBalance(accountId, requestBody.amount(), paymentModeId, requestBody.transactionType(), false);
 
-        final var transaction = Transaction.builder()
-                .user(User.builder()
-                        .id(userId)
-                        .build())
-                .transactionType(TransactionType.valueOf(transactionType))
-                .amount((TransactionType.valueOf(transactionType) == TransactionType.EXPENSE) ? -requestBody.amount() : requestBody.amount())
-                .category(Category.builder()
-                        .id(categoryId)
-                        .build())
-                .paymentMode(PaymentMode.builder()
-                        .id(paymentModeId)
-                        .build())
-                .description(requestBody.description())
-                .transactionDate(requestBody.transactionDate())
-                .build();
+        Transaction transaction = new Transaction();
+        transactionMapper.transactionFromRequestDto(requestBody, transaction, userId);
 
         final var savedTransaction = transactionRepo.save(transaction);
         return transactionMapper.toTransactionDto(savedTransaction);
@@ -184,7 +170,7 @@ public class TransactionServiceImpl implements TransactionService {
                 .orElseThrow(() -> new TransactionNotFoundException(requestBody.transactionId()));
 
 
-        transactionMapper.updateTransactionFromDto(requestBody, transaction, userId);
+        transactionMapper.transactionFromRequestDto(requestBody, transaction, userId);
 
         final var savedTransaction = transactionRepo.save(transaction);
 
