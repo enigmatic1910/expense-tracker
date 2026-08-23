@@ -6,8 +6,8 @@ import com.project.expensetracker.exception.AccountNotFoundException;
 import com.project.expensetracker.exception.InsufficientBalanceException;
 import com.project.expensetracker.repo.AccountRepo;
 import com.project.expensetracker.service.paymentMode.PaymentModeService;
-import com.project.expensetracker.service.transaction.AccountBalanceStrategy;
-import com.project.expensetracker.service.transaction.AccountBalanceStrategyFactory;
+import com.project.expensetracker.service.account.strategy.AccountBalanceStrategy;
+import com.project.expensetracker.service.account.strategy.AccountBalanceStrategyFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,5 +52,20 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public void update(Account account) {
         accountRepo.save(account);
+    }
+
+    @Override
+    public void reverseBalance(Long accountId, Double amount, Long paymentModeId, String type, boolean isSourceAccount) {
+        final var paymentMode = paymentModeService.get(paymentModeId);
+
+        AccountBalanceStrategy strategy = accountBalanceStrategyFactory.getStrategy((paymentMode.getType()));
+
+        Account account = get(accountId);
+        System.out.println(account.getBalance());
+        final var updatedBalance = strategy.reverseBalance(account, Math.abs(amount), TransactionType.valueOf(type.toUpperCase()), isSourceAccount);
+
+        account.setBalance(updatedBalance);
+
+        this.update(account);
     }
 }

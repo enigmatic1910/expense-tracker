@@ -12,4 +12,6 @@ public interface AccountService {
     Account get(Long accountId);
 
     void update(Account account);
+
+    void reverseBalance(Long accountId, Double amount, Long paymentModeId, String type, boolean isSourceAccount);
 }

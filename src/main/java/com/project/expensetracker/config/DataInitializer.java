@@ -43,7 +43,7 @@ public class DataInitializer {
                 var account = Account.builder()
                         .bank(bank)
                         .user(savedUser)
-                        .balance(50000.0)
+                        .balance(5000.0)
                         .lastFourDigits("0998")
                         .build();
 

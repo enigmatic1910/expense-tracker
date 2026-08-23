@@ -3,7 +3,7 @@ package com.project.expensetracker.dto;
 import java.time.LocalDateTime;
 
 public record TransactionDto(
-        String id,
+        Long transactionId,
         String transactionType,
         Double amount,
         String description,

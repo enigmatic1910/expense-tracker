@@ -1,4 +1,4 @@
-package com.project.expensetracker.service.transaction;
+package com.project.expensetracker.service.account.strategy;
 
 import com.project.expensetracker.entity.Account;
 import com.project.expensetracker.enums.TransactionBehavior;
@@ -6,7 +6,7 @@ import com.project.expensetracker.enums.TransactionType;
 import com.project.expensetracker.exception.InsufficientBalanceException;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("AssetAccountBalanceStrategy")
 public class AssestAccountBalanceStrategy implements AccountBalanceStrategy {
     @Override
     public Double calculateBalance(Account account, Double amount, TransactionType transactionType, boolean isSourceAccount) throws InsufficientBalanceException {

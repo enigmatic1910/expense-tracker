@@ -3,10 +3,7 @@ import com.project.expensetracker.dto.TransactionDto;
 import com.project.expensetracker.dto.TransactionRequestDto;
 import com.project.expensetracker.entity.*;
 import com.project.expensetracker.enums.TransactionType;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.MappingTarget;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 import java.util.List;
 
@@ -17,20 +14,38 @@ public interface TransactionMapper {
 
     @Mapping(source = "paymentMode.id", target = "paymentModeId")
     @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(target="transactionId", source="id")
     TransactionDto toTransactionDto(Transaction transaction);
 
     List<TransactionDto> toTransactionDtos(List<Transaction> transactions);
 
     @Mapping(target = "user", source = "userId", qualifiedByName = "idToUser")
-    @Mapping(target = "account", source = "transactionDto.accountId", qualifiedByName = "idToAccount")
+    //@Mapping(target = "account", source = "transactionDto.accountId", qualifiedByName = "idToAccount")
     @Mapping(target="category", source = "transactionDto.categoryId", qualifiedByName = "idToCategory")
     @Mapping(target = "paymentMode", source = "transactionDto.paymentModeId", qualifiedByName = "idToPaymentMode")
-    @Mapping(target = "amount", source = "transactionDto", qualifiedByName = "mapAmount")
-    void transactionFromRequestDto(TransactionRequestDto transactionDto, @MappingTarget Transaction transaction, String userId);
+    //@Mapping(target = "amount", source = "transactionDto", qualifiedByName = "mapAmount")
+    @Mapping(target="amount", ignore = true)
+    @Mapping(target="account", ignore = true)
+    @Mapping(target="transferId", source="transferId")
+    void transactionFromRequestDto(TransactionRequestDto transactionDto, @MappingTarget Transaction transaction, String userId, String transferId, boolean isSourceAccount);
 
-    @Named("mapAmount")
-    default Double mapAmount(TransactionRequestDto dto) {
-        return TransactionType.valueOf(dto.transactionType()) == TransactionType.EXPENSE ? -dto.amount() : dto.amount();
+    @AfterMapping
+    default void mapAmountAndAccount(TransactionRequestDto dto, @MappingTarget Transaction transaction, boolean isSourceAccount){
+        final var type = TransactionType.valueOf(dto.transactionType());
+
+        if(type == TransactionType.TRANSFER){
+            if(isSourceAccount){
+               transaction.setAccount(Account.builder().id(dto.accountId()).build());
+               transaction.setAmount(-dto.amount());
+            }
+            else{
+                transaction.setAccount(Account.builder().id(dto.toAccount()).build());
+                transaction.setAmount(dto.amount());
+            }
+            return;
+        }
+        transaction.setAccount(Account.builder().id(dto.accountId()).build());
+        transaction.setAmount(TransactionType.valueOf(dto.transactionType()) == TransactionType.EXPENSE ? -dto.amount() : dto.amount());
     }
 
     @Named("idToUser")
@@ -38,10 +53,6 @@ public interface TransactionMapper {
         return id != null ? User.builder().id(id).build() : null;
     }
 
-    @Named("idToAccount")
-    default Account idToAccount(Long id){
-        return id != null ? Account.builder().id(id).build() : null;
-    }
 
     @Named("idToCategory")
     default Category idToCategory(Long id){

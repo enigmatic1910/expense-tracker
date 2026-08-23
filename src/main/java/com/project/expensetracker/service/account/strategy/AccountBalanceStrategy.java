@@ -1,4 +1,4 @@
-package com.project.expensetracker.service.transaction;
+package com.project.expensetracker.service.account.strategy;
 
 import com.project.expensetracker.entity.Account;
 import com.project.expensetracker.enums.TransactionBehavior;

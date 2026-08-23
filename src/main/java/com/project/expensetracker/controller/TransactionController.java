@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TransactionController {
 
-    private static final String LOGGED_IN_USER = "99b21675-bf67-42a6-925e-c5a7ccda0b56";
+    private static final String LOGGED_IN_USER = "674a1664-ce08-47fc-a055-22c109216b78";
     private final TransactionService transactionService;
 
     @PostMapping("/")

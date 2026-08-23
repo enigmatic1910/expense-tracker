@@ -19,4 +19,6 @@ public interface TransactionRepo extends JpaRepository<Transaction, Long> {
     @Transactional
     @Query("delete from Transaction t where t.id = :transactionId and t.user.id = :userId")
     void deleteByIdAndUserId(Long transactionId, String userId);
+
+    List<Transaction> findAllByTransferId(String transferId);
 }
