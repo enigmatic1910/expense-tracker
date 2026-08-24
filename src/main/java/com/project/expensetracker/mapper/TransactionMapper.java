@@ -1,4 +1,6 @@
 package com.project.expensetracker.mapper;
+import com.project.expensetracker.dto.AiInputDto;
+import com.project.expensetracker.dto.AiParseDto;
 import com.project.expensetracker.dto.TransactionDto;
 import com.project.expensetracker.dto.TransactionRequestDto;
 import com.project.expensetracker.entity.*;
@@ -16,6 +18,8 @@ public interface TransactionMapper {
     @Mapping(source = "category.id", target = "categoryId")
     @Mapping(target="transactionId", source="id")
     TransactionDto toTransactionDto(Transaction transaction);
+
+    TransactionRequestDto fromAiParseResult(AiParseDto aiParseDto);
 
     List<TransactionDto> toTransactionDtos(List<Transaction> transactions);
 

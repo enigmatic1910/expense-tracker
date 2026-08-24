@@ -7,7 +7,7 @@ import com.project.expensetracker.enums.TransactionType;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +21,7 @@ class TransactionMapperTest {
         String transactionType = "EXPENSE";
         Double amount = 100.0;
         String description = "Test transaction";
-        LocalDateTime transactionDate = LocalDateTime.now();
+        LocalDate transactionDate = LocalDate.now();
         String transferId = null;
         Long paymentModeId = 1L;
         Long categoryId = 1L;
@@ -61,7 +61,7 @@ class TransactionMapperTest {
         String transactionType = "TRANSFER";
         Double amount = 100.0;
         String description = "Test transaction";
-        LocalDateTime transactionDate = LocalDateTime.now();
+        LocalDate transactionDate = LocalDate.now();
         String transferId = UUID.randomUUID().toString();
         Long paymentModeId = 1L;
         Long categoryId = 1L;
@@ -102,7 +102,7 @@ class TransactionMapperTest {
         String transactionType = "TRANSFER";
         Double amount = 100.0;
         String description = "Test transaction";
-        LocalDateTime transactionDate = LocalDateTime.now();
+        LocalDate transactionDate = LocalDate.now();
         String transferId = UUID.randomUUID().toString();
         Long paymentModeId = 1L;
         Long categoryId = 1L;
@@ -143,7 +143,7 @@ class TransactionMapperTest {
         String transactionType = "INCOME";
         Double amount = 100.0;
         String description = "Test transaction";
-        LocalDateTime transactionDate = LocalDateTime.now();
+        LocalDate transactionDate = LocalDate.now();
         String transferId = null;
         Long paymentModeId = 1L;
         Long categoryId = 1L;

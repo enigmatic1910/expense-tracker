@@ -1,17 +1,12 @@
 package com.project.expensetracker.dto;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public record TransactionDto(
-        Long transactionId,
+public record AiParseDto(
         String transactionType,
         Double amount,
         String description,
         LocalDate transactionDate,
-        String transferId,
-        Long paymentModeId,
-        Long categoryId
-
+        String errorMessage
 ) {
 }

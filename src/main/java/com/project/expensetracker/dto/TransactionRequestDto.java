@@ -1,6 +1,6 @@
 package com.project.expensetracker.dto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record TransactionRequestDto(
         Long transactionId,
@@ -10,7 +10,7 @@ public record TransactionRequestDto(
         Long paymentModeId,
         Long categoryId,
         Long accountId,
-        LocalDateTime transactionDate,
+        LocalDate transactionDate,
         Long toAccount,
         String transferId
 ) {

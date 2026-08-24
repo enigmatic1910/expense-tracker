@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class Transaction {
     private String description;
 
     @CreationTimestamp
-    private LocalDateTime transactionDate;
+    private LocalDate transactionDate;
 
     private String transferId;
 
