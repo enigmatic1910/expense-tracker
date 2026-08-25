@@ -1,15 +1,13 @@
 package com.project.expensetracker.service.ai;
 
-import com.project.expensetracker.dto.AiInputDto;
-import com.project.expensetracker.dto.AiParseDto;
-import com.project.expensetracker.dto.AiTaskDto;
-import com.project.expensetracker.dto.TransactionRequestDto;
+import com.project.expensetracker.dto.*;
 import com.project.expensetracker.entity.AiParsingTask;
 import com.project.expensetracker.entity.User;
 import com.project.expensetracker.enums.Status;
 import com.project.expensetracker.mapper.AiParseTaskMapper;
 import com.project.expensetracker.mapper.TransactionMapper;
 import com.project.expensetracker.service.ai.parseTask.ParseTaskService;
+import com.project.expensetracker.service.notification.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
@@ -33,6 +31,7 @@ public class AiServiceImpl implements AiService {
     private final ParseTaskService parseTaskService;
     private final AiParseTaskMapper aiParseTaskMapper;
     private final ObjectMapper mapper;
+    private final NotificationService notificationService;
 
     private static final String PROMPT_TEMPLATE = """
      Rules:
@@ -94,6 +93,9 @@ public class AiServiceImpl implements AiService {
         parsingTask.setContent(mapper.writeValueAsString(parsingTask));
 
         parseTaskService.save(parsingTask);
+        notificationService.send(JobStatusDto.of(parsingTask.getId().toString(), parsingTask.getStatus().toString()));
+
+        notificationService.closeConnection(parsingTask.getId().toString());
         log.info("End - parse | Request Counter: {}", counter);
     }
 
@@ -107,7 +109,7 @@ public class AiServiceImpl implements AiService {
                 .build();
 
         final var savedTask = parseTaskService.save(parsingTask);
-
+        notificationService.openConnection(parsingTask.getId().toString());
         return aiParseTaskMapper.toDto(savedTask, "AI task saved");
     }
 }
