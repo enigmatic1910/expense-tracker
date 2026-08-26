@@ -37,7 +37,7 @@ public class AiTaskScheduler {
         final var aiParsingTask = taskQueue.remove();
         aiParsingTask.setStatus(Status.PROCESSING);
         parseTaskService.save(aiParsingTask);
-        notificationService.send(JobStatusDto.of(aiParsingTask.getId().toString(), aiParsingTask.getStatus().name() ));
+        notificationService.send(JobStatusDto.of(aiParsingTask.getId().toString(), aiParsingTask.getStatus().name()));
 
         aiService.parse(aiParsingTask);
     }

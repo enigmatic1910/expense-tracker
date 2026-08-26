@@ -1,4 +1,4 @@
-package com.project.expensetracker.exceptions;
+package com.project.expensetracker.exception;
 
 import java.util.List;
 

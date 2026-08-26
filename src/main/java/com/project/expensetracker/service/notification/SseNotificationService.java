@@ -21,6 +21,7 @@ public class SseNotificationService implements NotificationService{
         try{
             emitter.send(statusDto);
         } catch (Exception e) {
+            emitters.remove(statusDto.jobId());
             throw new RuntimeException("Failed to send notification for job: " + statusDto.jobId(), e);
         }
 
@@ -43,6 +44,9 @@ public class SseNotificationService implements NotificationService{
 
     @Override
     public void closeConnection(String jobId) {
-        this.get(jobId).complete();
+        SseEmitter emitter = emitters.get(jobId);
+        if (emitter != null) {
+            emitter.complete();
+        }
     }
 }

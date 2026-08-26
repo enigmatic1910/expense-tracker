@@ -2,11 +2,12 @@ package com.project.expensetracker.dto;
 
 import java.time.LocalDate;
 
-public record AiParseDto(
+public record AiParseResult(
         String transactionType,
         Double amount,
         String description,
         LocalDate transactionDate,
-        String errorMessage
+        String errorMessage,
+        String category
 ) {
 }

@@ -2,22 +2,26 @@ package com.project.expensetracker.service.ai;
 
 import com.project.expensetracker.dto.*;
 import com.project.expensetracker.entity.AiParsingTask;
+import com.project.expensetracker.entity.Category;
 import com.project.expensetracker.entity.User;
 import com.project.expensetracker.enums.Status;
+import com.project.expensetracker.event.AiParsingTaskCompleted;
+import com.project.expensetracker.event.AiParsingTaskCreated;
+import com.project.expensetracker.event.EventHandler;
 import com.project.expensetracker.mapper.AiParseTaskMapper;
-import com.project.expensetracker.mapper.TransactionMapper;
 import com.project.expensetracker.service.ai.parseTask.ParseTaskService;
-import com.project.expensetracker.service.notification.NotificationService;
+import com.project.expensetracker.service.category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.prompt.SystemPromptTemplate;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -26,18 +30,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AiServiceImpl implements AiService {
 
     private final ChatClient chatClient;
-    private final TransactionMapper transactionMapper;
+    private final ApplicationEventPublisher eventPublisher;
     private final AtomicInteger requestCounter;
     private final ParseTaskService parseTaskService;
     private final AiParseTaskMapper aiParseTaskMapper;
     private final ObjectMapper mapper;
-    private final NotificationService notificationService;
 
     private static final String PROMPT_TEMPLATE = """
      Rules:
       1. Your job is to parse the raw text from the user which is either related to expense or income.
 
-      2. Based on the type of text decide the 'type' field of output json. Allowed values for 'type' fields are EXPENSE or INCOME.
+      2. Based on the type of text decide the 'transactionType' field of output json. Allowed values for 'transactionType' fields are EXPENSE or INCOME.
 
       3. Field 'transactionDate' is having date format: yyyy-mm-dd. If the user doesn't mention any date then use current date as transactionDate.
 
@@ -59,6 +62,8 @@ public class AiServiceImpl implements AiService {
 
       9. Raw Text is in English or Hindi language only.
       """;
+    private final EventHandler eventHandler;
+    private final CategoryService categoryService;
 
     @Override
     public TransactionRequestDto parse(AiInputDto text) {
@@ -71,12 +76,17 @@ public class AiServiceImpl implements AiService {
         int counter = requestCounter.incrementAndGet();
         log.info("Start - parse | Request Counter: {}", counter);
 
+        List<String> categories = categoryService.getAllWithoutUserId()
+                .stream()
+                .map(Category::getName)
+                .toList();
+
         HashMap<String, Object> variables = new HashMap<>();
         variables.put("year", LocalDate.now().getYear());
         variables.put("today", (LocalDate.now()));
         variables.put("yesterday", (LocalDate.now().minusDays(1)));
         variables.put("dayBeforeYesterday", (LocalDate.now().minusDays(2)));
-        variables.put("categories", null);
+        variables.put("categories", categories);
 
 
         SystemPromptTemplate systemPromptTemplate = SystemPromptTemplate.builder()
@@ -84,18 +94,17 @@ public class AiServiceImpl implements AiService {
                 .variables(variables)
                 .build();
 
-        AiParseDto result = chatClient.prompt()
+        AiParseResult result = chatClient.prompt()
                 .system(systemPromptTemplate.render())
+                .user(parsingTask.getRawInput())
                 .call()
-                .entity(AiParseDto.class);
+                .entity(AiParseResult.class);
 
         parsingTask.setStatus(Status.COMPLETED);
-        parsingTask.setContent(mapper.writeValueAsString(parsingTask));
+        parsingTask.setContent(mapper.writeValueAsString(result));
 
         parseTaskService.save(parsingTask);
-        notificationService.send(JobStatusDto.of(parsingTask.getId().toString(), parsingTask.getStatus().toString()));
-
-        notificationService.closeConnection(parsingTask.getId().toString());
+        eventPublisher.publishEvent(new AiParsingTaskCompleted(parsingTask.getId().toString(), parsingTask));
         log.info("End - parse | Request Counter: {}", counter);
     }
 
@@ -109,7 +118,7 @@ public class AiServiceImpl implements AiService {
                 .build();
 
         final var savedTask = parseTaskService.save(parsingTask);
-        notificationService.openConnection(parsingTask.getId().toString());
+        eventPublisher.publishEvent(new AiParsingTaskCreated(savedTask.getId().toString()));
         return aiParseTaskMapper.toDto(savedTask, "AI task saved");
     }
 }

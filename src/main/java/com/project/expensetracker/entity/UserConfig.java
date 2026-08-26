@@ -3,6 +3,7 @@ package com.project.expensetracker.entity;
 import com.project.expensetracker.enums.LanguagePreference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
+@Data
 public class UserConfig {
 
     @Id
@@ -26,11 +28,14 @@ public class UserConfig {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id")
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="payment_mode_id")
     private PaymentMode paymentMode;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private Account defaultAccount;
 }
