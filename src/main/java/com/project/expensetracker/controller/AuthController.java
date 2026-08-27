@@ -5,6 +5,7 @@ import com.project.expensetracker.dto.RegisterRequestDto;
 import com.project.expensetracker.service.auth.AuthService;
 import com.project.expensetracker.service.user.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +24,9 @@ public class AuthController {
     ResponseEntity<?> register(@RequestBody RegisterRequestDto request){
 
         userService.registerUser(request);
-        return null;
+        final var loginRequest = new LoginRequestDto(request.email(), request.password());
+        var authResponse = authService.loginUser(loginRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(authResponse);
     }
 
     @PostMapping(value = "/login")
