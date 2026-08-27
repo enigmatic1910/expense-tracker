@@ -62,4 +62,10 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage());
         return ResponseEntity.status(400).body(ex.getMessage());
     }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<?> handleUserWithEmailNotFoundException(UserNotFoundException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
 }
