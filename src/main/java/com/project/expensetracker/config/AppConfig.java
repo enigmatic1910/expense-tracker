@@ -1,9 +1,27 @@
 package com.project.expensetracker.config;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 @Configuration
-@EnableConfigurationProperties(JwtProp.class)
+@EnableConfigurationProperties({JwtProp.class, RedisProps.class})
+@EnableRedisRepositories
 public class AppConfig {
+
+    @Bean
+    RedisConnectionFactory connectionFactory(RedisProps redisProps) {
+        return new LettuceConnectionFactory(redisProps.getHost(), redisProps.getPort());
+    }
+
+    @Bean
+    RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(redisConnectionFactory);
+        return template;
+    }
 }
