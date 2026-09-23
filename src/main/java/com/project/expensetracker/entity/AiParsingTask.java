@@ -29,8 +29,6 @@ public class AiParsingTask {
 
     private String errorMessage;
 
-    private Long correlationId;
-
     @CreationTimestamp
     private LocalDateTime createdAt;
 
