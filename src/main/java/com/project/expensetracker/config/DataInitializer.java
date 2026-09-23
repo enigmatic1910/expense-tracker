@@ -9,6 +9,7 @@ import com.project.expensetracker.repo.BankRepo;
 import com.project.expensetracker.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,8 +27,14 @@ public class DataInitializer {
     private final BankRepo bankRepo;
 
     @Bean
-    CommandLineRunner initData() {
+    CommandLineRunner initData(
+            @Value("${app.data-initializer.enabled:false}") boolean enabled
+    ) {
         return args -> {
+
+            if(!enabled){
+                return;
+            }
 
             if(userRepo.findAll().isEmpty()) {
                 var bank = bankRepo.findByName("State Bank of India").orElseThrow();
