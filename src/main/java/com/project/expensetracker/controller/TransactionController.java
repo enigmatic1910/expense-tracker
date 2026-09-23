@@ -22,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TransactionController {
 
-    private static final int RECENT_TRANSACTION_LIMIT = 15;
+    private static final int RECENT_TRANSACTION_LIMIT = 10;
 
     private final TransactionService transactionService;
     private final UserRepo userRepo;

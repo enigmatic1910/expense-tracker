@@ -10,7 +10,7 @@ import java.util.List;
 @Repository
 public interface CardRepo extends JpaRepository<Card, String> {
 
-    @Query("select c from Card c left join fetch c.account a left join fetch a.bank b where c.user.email = :userId and c.isActive = true")
+    @Query("select c from Card c where c.user.email = :userId and c.isActive = true")
     List<Card> findByUser(String userId);
 
     @Query("select c from Card c where c.id = :cardId and c.user.email = :userId")

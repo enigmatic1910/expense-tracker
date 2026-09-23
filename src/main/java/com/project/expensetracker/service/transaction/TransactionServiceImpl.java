@@ -109,9 +109,6 @@ public class TransactionServiceImpl implements TransactionService {
             if (card == null) {
                 throw new IllegalArgumentException("Card is not available for this user");
             }
-            if (card.getAccount() == null || !accounts.contains(card.getAccount().getId())) {
-                throw new IllegalArgumentException("Selected card must belong to the selected account");
-            }
         }
     }
 

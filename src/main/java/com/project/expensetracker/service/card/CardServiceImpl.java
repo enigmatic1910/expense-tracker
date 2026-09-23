@@ -3,22 +3,17 @@ package com.project.expensetracker.service.card;
 import com.project.expensetracker.dto.CardDto;
 import com.project.expensetracker.dto.CardSummaryDto;
 import com.project.expensetracker.dto.UserCards;
-import com.project.expensetracker.entity.Account;
 import com.project.expensetracker.entity.Card;
 import com.project.expensetracker.entity.User;
-import com.project.expensetracker.enums.AccountType;
 import com.project.expensetracker.enums.CardType;
-import com.project.expensetracker.repo.AccountRepo;
 import com.project.expensetracker.repo.CardRepo;
 import com.project.expensetracker.repo.UserRepo;
 import com.project.expensetracker.repo.TransactionRepo;
-import com.project.expensetracker.service.account.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 @Service
@@ -27,8 +22,6 @@ public class CardServiceImpl implements CardService {
 
     private final CardRepo cardRepo;
     private final UserRepo userRepo;
-    private final AccountService accountService;
-    private final AccountRepo accountRepo;
     private final TransactionRepo transactionRepo;
 
     @Override
@@ -53,26 +46,15 @@ public class CardServiceImpl implements CardService {
         }
 
         final var cardsToSave = userCards.cards().stream().map(cardDto -> {
-            Account account;
-
-            if(cardDto.cardType() == CardType.CREDIT_CARD){
-                account = accountRepo.save(Account.builder()
-                                .user(user)
-                                .accountType(AccountType.CREDIT)
-                                .balance(cardDto.limit() != null ? cardDto.limit() : 0.0)
-                                .lastFourDigits(cardDto.lastFourDigits())
-                                .bank(cardDto.bank() != null ? cardDto.bank() : null)
-                        .build());
-            }
-            else{
-                account = accountService.getAccount(userId, cardDto.accountId());
+            if (cardDto == null || cardDto.lastFourDigits() == null
+                    || !cardDto.lastFourDigits().trim().matches("\\d{4}")) {
+                throw new IllegalArgumentException("Last four digits must be exactly 4 numbers");
             }
 
             return Card.builder()
                     .user(user)
-                    .account(account)
                     .cardType(cardDto.cardType())
-                    .lastFourDigits(cardDto.lastFourDigits())
+                    .lastFourDigits(cardDto.lastFourDigits().trim())
                     .creditLimit(cardDto.limit() != null ? cardDto.limit() : 0L)
                     .build();
         })
@@ -117,12 +99,12 @@ public class CardServiceImpl implements CardService {
                 card.getId(),
                 card.getCardType(),
                 card.getLastFourDigits(),
-                card.getAccount() != null ? card.getAccount().getId() : null,
+                null,
                 card.getCardType() == CardType.CREDIT_CARD &&
                         card.getCreditLimit() != null
                         ? card.getCreditLimit()
                         : null,
-                card.getAccount() != null ? card.getAccount().getBank() : null
+                null
         );
     }
 }

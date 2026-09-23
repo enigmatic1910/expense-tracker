@@ -46,9 +46,6 @@ public class Account {
     @JoinColumn(name="bank_id")
     private Bank bank;
 
-    @OneToMany(mappedBy="account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Card> card;
-
     @OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<Transaction> transactions;
 

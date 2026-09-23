@@ -64,7 +64,7 @@ public class OnboardingServiceImpl implements OnboardingService{
 
         if(request.cardType() != null && request.cardLastFourDigits() != null){
             final var card = Card.builder()
-                    .account(savedBankAccount)
+                    .user(user.get())
                     .lastFourDigits(request.cardLastFourDigits())
                     .creditLimit(request.cardLimit() != null ? request.cardLimit() : 0L)
                     .cardType(request.cardType())
