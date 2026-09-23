@@ -3,6 +3,7 @@ package com.project.expensetracker.config;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +17,9 @@ import java.util.List;
 @EnableConfigurationProperties({JwtProp.class, RedisProps.class})
 @EnableRedisRepositories
 public class AppConfig {
+
+    @Value("${app.cors.allowed-origin:http://localhost:3000}")
+    private String allowedOrigin;
 
     @Bean
     RedisConnectionFactory connectionFactory(RedisProps redisProps) {
@@ -33,7 +37,7 @@ public class AppConfig {
     UrlBasedCorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        corsConfiguration.setAllowedOrigins(List.of("http://localhost:3000"));
+        corsConfiguration.setAllowedOrigins(List.of(allowedOrigin));
 
         corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         corsConfiguration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type", "X-Requested-With"));
