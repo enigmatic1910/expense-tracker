@@ -1,5 +1,6 @@
 package com.project.expensetracker.entity;
 
+import com.project.expensetracker.enums.AccountType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,6 +25,13 @@ public class Account {
 
     private String lastFourDigits;
     private Double balance;
+
+    @Enumerated(EnumType.STRING)
+    private AccountType accountType;
+
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean isActive = true;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

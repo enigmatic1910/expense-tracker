@@ -1,15 +1,13 @@
 package com.project.expensetracker.utils;
 
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.web.authentication.www.NonceExpiredException;
 
 import javax.crypto.SecretKey;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.UUID;
+import java.util.*;
 
 
 public interface JwtUtils {
@@ -38,5 +36,48 @@ public interface JwtUtils {
 
     static String generateRefreshToken(String email, SecretKey secretKey, long expirationTimeRefreshTime) {
         return generateToken(email, null, secretKey, expirationTimeRefreshTime, true);
+    }
+
+    static Claims parseToken(String s, SecretKey secretKey) {
+        JwtParser parser = Jwts.parser()
+                .verifyWith(secretKey)
+                .build();
+
+        try{
+           return parser.parseSignedClaims(s)
+                   .getPayload();
+        }
+        catch (ExpiredJwtException ex){
+            throw new NonceExpiredException(ex.getMessage());
+        }
+        catch(JwtException | IllegalArgumentException e){
+            throw new RuntimeException("Invalid JWT token", e);
+        }
+    }
+
+    static List<? extends GrantedAuthority> getAuthorities(Claims claims) {
+        return claims.get("roles", List.class) instanceof List<?> list ? list.stream()
+                .map(role -> new SimpleGrantedAuthority(role.toString()))
+                .toList()
+                : Collections.emptyList();
+    }
+
+    static Claims getClaimsFromToken(String accessToken, SecretKey secretKey) {
+
+        JwtParser parser = Jwts.parser()
+                .verifyWith(secretKey)
+                .build();
+
+        try{
+            return parser.parseSignedClaims(accessToken)
+                    .getPayload();
+        }
+        catch (ExpiredJwtException ex){
+            return ex.getClaims();
+        }
+        catch(JwtException | IllegalArgumentException e){
+            throw new RuntimeException("Invalid JWT token", e);
+        }
+
     }
 }

@@ -1,8 +1,10 @@
 package com.project.expensetracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.expensetracker.enums.LanguagePreference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Builder
 public class UserConfig {
 
     @Id

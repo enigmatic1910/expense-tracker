@@ -68,4 +68,28 @@ public class GlobalExceptionHandler {
         log.error(ex.getMessage());
         return ResponseEntity.status(404).body(ex.getMessage());
     }
+
+    @ExceptionHandler(UserAlreadyOnboardedException.class)
+    public ResponseEntity<?> handleUserAlreadyOnboardedException(UserAlreadyOnboardedException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(400).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(InsightGenerationLimitException.class)
+    public ResponseEntity<?> handleInsightGenerationLimitException(InsightGenerationLimitException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(429).body(ex.getMessage());
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, NumberFormatException.class})
+    public ResponseEntity<?> handleBadRequestExceptions(RuntimeException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(400).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(BankNotFoundException.class)
+    public ResponseEntity<?> handleBankNotFoundException(BankNotFoundException ex) {
+        log.error(ex.getMessage());
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
 }

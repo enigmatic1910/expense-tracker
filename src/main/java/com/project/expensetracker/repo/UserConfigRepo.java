@@ -8,6 +8,7 @@ import java.util.Optional;
 
 public interface UserConfigRepo extends JpaRepository<UserConfig, Long> {
 
-    @Query("select c from UserConfig c where c.user.id = :id")
-    Optional<UserConfig> findByUserId(String id);
+    @Query("select c from UserConfig c where c.user.email = :email")
+    Optional<UserConfig> findByEmail(String email);
+
 }

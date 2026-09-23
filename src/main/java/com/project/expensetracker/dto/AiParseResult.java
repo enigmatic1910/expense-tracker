@@ -8,6 +8,8 @@ public record AiParseResult(
         String description,
         LocalDate transactionDate,
         String errorMessage,
-        String category
+        String category,
+        String account,
+        String paymentMode
 ) {
 }

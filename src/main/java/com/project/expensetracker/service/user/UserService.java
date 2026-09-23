@@ -1,5 +1,6 @@
 package com.project.expensetracker.service.user;
 
+import com.project.expensetracker.dto.OnboardingRequestDto;
 import com.project.expensetracker.dto.RegisterRequestDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 

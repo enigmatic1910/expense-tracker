@@ -1,5 +1,6 @@
 package com.project.expensetracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.project.expensetracker.enums.TransactionBehavior;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,10 @@ public class PaymentMode {
     TransactionBehavior type;
 
     @OneToMany(mappedBy = "paymentMode", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<UserConfig> userConfig;
 
     @OneToMany(mappedBy = "paymentMode", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Transaction> transactions;
 }

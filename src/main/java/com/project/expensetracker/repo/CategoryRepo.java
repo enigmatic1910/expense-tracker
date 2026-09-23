@@ -13,5 +13,14 @@ public interface CategoryRepo extends JpaRepository<Category,Long> {
 
     List<Category> findAllByUserIsNull();
 
+    @Query("select c from Category c where c.user.id = :userId or c.user is null")
+    List<Category> findAllForUser(String userId);
+
+    @Query("select c from Category c where c.user is null")
+    List<Category> getAllSystemCategory();
+
     Category findByName(String categoryName);
+
+    @Query("select c from Category c where lower(c.name) = lower(:name) and (c.user.id = :userId or c.user is null)")
+    Category findByNameForUser(String name, String userId);
 }

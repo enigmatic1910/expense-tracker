@@ -1,11 +1,15 @@
 package com.project.expensetracker.service.account;
 
+import com.project.expensetracker.dto.AccountDto;
+import com.project.expensetracker.dto.UserBankAccounts;
 import com.project.expensetracker.entity.Account;
 
 import java.util.List;
 
 public interface AccountService {
     boolean existsByUserAndAccount(String userId, List<Long> accounts);
+
+    List<AccountDto> getUserAccounts(String userId);
 
     void updateBalance(Long accountId, Double amount, Long paymentedModeId, String type, boolean isSourceAccount);
 
@@ -14,4 +18,12 @@ public interface AccountService {
     void update(Account account);
 
     void reverseBalance(Long accountId, Double amount, Long paymentModeId, String type, boolean isSourceAccount);
+
+    List<AccountDto> addAccounts(String userId, UserBankAccounts accounts);
+
+    AccountDto getUserAccountDetails(String userId, String accountId);
+
+    Account getAccount(String userId, Long aLong);
+
+    void deleteAccount(String userId, Long accountId);
 }

@@ -23,7 +23,7 @@ public class AiTaskScheduler {
 
     PriorityQueue<AiParsingTask> taskQueue = new PriorityQueue<>(Comparator.comparing(AiParsingTask :: getCreatedAt));
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 6000)
     private void scheduleTask(){
         if(taskQueue.isEmpty()){
             final var tasks = parseTaskService.getPendingTasks(Status.PENDING);

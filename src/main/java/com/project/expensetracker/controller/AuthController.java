@@ -1,20 +1,19 @@
 package com.project.expensetracker.controller;
 
 import com.project.expensetracker.dto.LoginRequestDto;
+import com.project.expensetracker.dto.TokenRefreshRequest;
 import com.project.expensetracker.dto.RegisterRequestDto;
 import com.project.expensetracker.service.auth.AuthService;
 import com.project.expensetracker.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+//@CrossOrigin("http://localhost:3000")
 public class AuthController {
 
     private final UserService userService;
@@ -32,6 +31,12 @@ public class AuthController {
     @PostMapping(value = "/login")
     ResponseEntity<?> login(@RequestBody LoginRequestDto request){
         var authResponse = authService.loginUser(request);
+        return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/refresh-token")
+    ResponseEntity<?> refreshToken(@RequestBody TokenRefreshRequest request){
+        final var authResponse = authService.refreshToken(request);
         return ResponseEntity.ok(authResponse);
     }
 }

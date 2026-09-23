@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PaymentModeRepo extends JpaRepository<PaymentMode, Long> {
 
+    java.util.Optional<PaymentMode> findByNameIgnoreCase(String name);
+
 }

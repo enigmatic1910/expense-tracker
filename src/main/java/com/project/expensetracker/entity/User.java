@@ -38,6 +38,9 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime lastInsightAt;
 
+    @Builder.Default
+    private boolean isOnboarded = false;
+
     @OneToOne(mappedBy = "user")
     private UserConfig userConfig;
 
@@ -55,4 +58,7 @@ public class User {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
     private List<Category> categories;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Card> cards;
 }

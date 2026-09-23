@@ -15,6 +15,9 @@ public interface TransactionMapper {
 
     @Mapping(source = "paymentMode.id", target = "paymentModeId")
     @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "card.id", target = "cardId")
+    @Mapping(source = "card.cardType", target = "cardType")
+    @Mapping(source = "card.lastFourDigits", target = "cardLastFourDigits")
     @Mapping(target="transactionId", source="id")
     TransactionDto toTransactionDto(Transaction transaction);
 
@@ -30,6 +33,7 @@ public interface TransactionMapper {
     //@Mapping(target = "account", source = "transactionDto.accountId", qualifiedByName = "idToAccount")
     @Mapping(target="category", source = "transactionDto.categoryId", qualifiedByName = "idToCategory")
     @Mapping(target = "paymentMode", source = "transactionDto.paymentModeId", qualifiedByName = "idToPaymentMode")
+    @Mapping(target = "card", source = "transactionDto.cardId", qualifiedByName = "idToCard")
     //@Mapping(target = "amount", source = "transactionDto", qualifiedByName = "mapAmount")
     @Mapping(target="amount", ignore = true)
     @Mapping(target="account", ignore = true)
@@ -69,5 +73,10 @@ public interface TransactionMapper {
     @Named("idToPaymentMode")
     default PaymentMode idToPaymentMode(Long id){
         return id != null ? PaymentMode.builder().id(id).build() : null;
+    }
+
+    @Named("idToCard")
+    default Card idToCard(String id){
+        return id != null && !id.isBlank() ? Card.builder().id(id).build() : null;
     }
 }

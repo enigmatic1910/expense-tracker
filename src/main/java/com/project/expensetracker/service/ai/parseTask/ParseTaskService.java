@@ -10,5 +10,5 @@ public interface ParseTaskService {
 
     List<AiParsingTask> getPendingTasks(Status status);
 
-
+    List<AiParsingTask> getPendingTasksWithUser(Status status);
 }

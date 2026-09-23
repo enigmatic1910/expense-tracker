@@ -27,4 +27,11 @@ public class ParseTaskServiceImpl implements ParseTaskService {
         limit.setMaxRows(13);
         return aiParsingRepo.findAllByStatusOrderByCreatedAtAsc(status, limit);
     }
+
+    @Override
+    public List<AiParsingTask> getPendingTasksWithUser(Status status) {
+        final var limit = new Limit();
+        limit.setMaxRows(13);
+        return aiParsingRepo.findAllByStatusOrderByCreatedAtAsc(status, limit);
+    }
 }

@@ -1,5 +1,6 @@
 package com.project.expensetracker.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,5 +24,6 @@ public class Bank {
     private String name;
 
     @OneToMany(mappedBy = "bank", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<Account> accounts;
 }

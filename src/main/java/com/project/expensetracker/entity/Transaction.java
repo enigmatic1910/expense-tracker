@@ -45,6 +45,10 @@ public class Transaction {
     private PaymentMode paymentMode;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="card_id")
+    private Card card;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="user_id")
     private User user;
 
