@@ -10,4 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class RedisProps {
     String host;
     int port;
+    String username;
+    String password;
 }
