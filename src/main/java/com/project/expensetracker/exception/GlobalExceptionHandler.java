@@ -1,6 +1,8 @@
 package com.project.expensetracker.exception;
 
+import com.project.expensetracker.dto.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -73,6 +75,16 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleUserAlreadyOnboardedException(UserAlreadyOnboardedException ex) {
         log.error(ex.getMessage());
         return ResponseEntity.status(400).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ApiResponse> handleAuthenticationException(AuthenticationException ex) {
+        log.warn("Authentication failed: {}", ex.getMessage());
+        return ResponseEntity.status(401).body(new ApiResponse(
+                401,
+                "Incorrect email or password.",
+                java.time.Instant.now().toString()
+        ));
     }
 
     @ExceptionHandler(InsightGenerationLimitException.class)
