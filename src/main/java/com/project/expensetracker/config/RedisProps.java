@@ -12,4 +12,5 @@ public class RedisProps {
     int port;
     String username;
     String password;
+    boolean ssl;
 }
