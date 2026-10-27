@@ -20,9 +20,11 @@ FROM eclipse-temurin:21-jre-jammy
 
 WORKDIR /app
 
+
 ENV PORT=10000 \
     SPRING_PROFILES_ACTIVE=prod \
-    JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0 -XX:+ExitOnOutOfMemoryError"
+    JAVA_TOOL_OPTIONS="-XX:MaxRAMPercentage=60.0 -XX:InitialRAMPercentage=20.0 -XX:+ExitOnOutOfMemoryError -Djavax.net.debug=ssl:handshake"
+
 
 RUN useradd --system --uid 10001 --create-home spring
 
